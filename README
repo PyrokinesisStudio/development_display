@@ -1,0 +1,56 @@
+This is intended to help developing scripts by making
+it easyer to visualize things directly from scripts.
+Look in the 3DView N-Panel for the display options.
+
+usage:
+
+dspl = bpy.types.WindowManager.display
+
+Then in your script you can simply add stuff to visualize it.
+For example:
+
+vecs = list of points
+dspl.add_points(vecs, 'list with my important points')
+
+when done or starting a new loop do
+dspl.clear() to clear all data
+or dspl.points.clear() for the subdicts.
+[points, edges, edge_chains, matrizies, eulers, quats, plots]
+
+All objects are stored in a dictonary and can thus be overwritten
+or reaccessed later. The key is also the display name in the viewport.
+
+The functions for adding all have a k (for key) value for this.
+If it is unset the next free integer in the dict keys is used instead.
+
+Use dspl.set_transform(some_matrix) to transform all later added elements
+by that matrix (to put them into object-local-space). Alternatively use
+dspl.apply_transform(some_matrix, inv=False)
+to transform all those already set.
+
+Functions for adding stuff:
+add_point(point, k='')
+add_points(points) # has no key. Is convinience to add a list of vecs
+add_edge(edge, k='') --> edge = [point, point]
+add_point_chain(points, k='') --> points = [point, point, ...]
+add_matrix(matrix, k='')
+add_euler(euler, k='')
+add_quat(quat, k='')
+add_bm(bm, k='')    --> bm = BMesh
+add_plotted_function(function, interval=[start, stop, step], k='')
+add_plot(xvalues, yvalues, k='')
+
+With add_plot you can visualize your own precomputed plots.
+
+Plotting of simple functions:
+The function takes the interval as input args and plots the
+function output on y
+(function, interval[start, stop, step]], plot(key/display)name)
+
+Plot sinus:
+dspl.add_plotted_function(function=sin, interval=[0, 6, 0.1], k='sinus-plot')
+to overwrite the plot use same k value
+
+other example:
+dspl.add_plotted_function(lambda x: 1/(exp(x)),[-2 ,2, 0.1],0)
+dspl.add_plotted_function(lambda x: np.sin(x),[-np.pi ,np.pi, 0.1], k=1)
